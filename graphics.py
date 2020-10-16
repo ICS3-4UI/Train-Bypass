@@ -9,14 +9,15 @@ import time
 if __name__ == "__main__":
     tk = Tk()
     tk.withdraw()
-    messagebox.showerror("Error", "Can't run script directly, please run Train Bypass.py")
+    messagebox.showerror("Error", "Can't run script directly!")
+    messagebox.showinfo("Note", "You may only edit the variables here, and then view from Train Bypass.py")
     sys.exit("User ran the wrong script.")
 
 WIDTH, HEIGHT = 1080, 800
 ORIGIN = [WIDTH / 2, HEIGHT / 2]
 
 # TRAIN AMOUNT
-boxCount = 18  # EDIT ME :)
+boxCount = 17  # EDIT ME :)
 
 tk = Tk()
 tk.protocol("WM_DELETE_WINDOW", lambda: None)

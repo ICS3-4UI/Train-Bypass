@@ -43,7 +43,7 @@ def popupMsgBox():
         key_listenerThread.start()
     else:
         messagebox.showerror("Cannot Run Program", "Please turn on sound and try again!")
-        sys.exit()
+        sys.exit("Cannot start animation without sound!")
 
 
 Thread(target=popupMsgBox).start()
