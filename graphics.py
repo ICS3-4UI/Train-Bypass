@@ -6,6 +6,12 @@ from tkinter import messagebox
 import random as rd
 import time
 
+if __name__ == "__main__":
+    tk = Tk()
+    tk.withdraw()
+    messagebox.showerror("Error", "Can't run script directly, please run Train Bypass.py")
+    sys.exit("User ran the wrong script.")
+
 WIDTH, HEIGHT = 1080, 800
 ORIGIN = [WIDTH / 2, HEIGHT / 2]
 
