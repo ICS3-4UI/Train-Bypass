@@ -9,9 +9,11 @@ import time
 if __name__ == "__main__":
     tk = Tk()
     tk.withdraw()
-    messagebox.showerror("Error", "Can't run script directly!")
-    messagebox.showinfo("Note", "You may only edit the variables here, and then view from Train Bypass.py")
-    sys.exit("User ran the wrong script.")
+    confirmation = messagebox.askyesno("Confirmation",
+                                       "I do not recommend running the script directly as there is no sound effects, would you like to proceed?")
+    
+    if not confirmation:
+        sys.exit("User ran the wrong script.")
 
 WIDTH, HEIGHT = 1080, 800
 ORIGIN = [WIDTH / 2, HEIGHT / 2]

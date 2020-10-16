@@ -32,9 +32,9 @@ key_listenerThread = Thread(target=keyboardListener)
 def popupMsgBox():
     tk = Tk()
     tk.withdraw()
-    messagebox.showwarning("Note", "You can't exit until the animation is fully finished!")
-    messagebox.showinfo("Note", "Don't worry, the program automatically closes once the animation is finished!")
-    messagebox.showinfo("Note", "Force exit by pressing Q on your keyboard")
+    messagebox.showwarning("Note",
+                           "You can't exit until the animation is fully finished!\n\nDon't worry, the program automatically closes once the "
+                           "animation is finished!\n\nForce exit by pressing Q on your keyboard")
     messagebox.showinfo("Note", "Please turn on sound for a better experience")
     soundConfirmation = messagebox.askyesno("Confirmation", "I have my sound turned on")
     if soundConfirmation:
