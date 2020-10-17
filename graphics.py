@@ -6,20 +6,22 @@ from tkinter import messagebox
 import random as rd
 import time
 
+# EDIT ME :)
+boxCount = 14
+trainBoxWidth = 450
+trainSpeed = 0.15
+
 if __name__ == "__main__":
     tk = Tk()
     tk.withdraw()
     confirmation = messagebox.askyesno("Confirmation",
                                        "I do not recommend running the script directly as there is no sound effects, would you like to proceed?")
-    
+
     if not confirmation:
         sys.exit("User ran the wrong script.")
 
 WIDTH, HEIGHT = 1080, 800
 ORIGIN = [WIDTH / 2, HEIGHT / 2]
-
-# TRAIN AMOUNT
-boxCount = 17  # EDIT ME :)
 
 tk = Tk()
 tk.protocol("WM_DELETE_WINDOW", lambda: None)
@@ -91,16 +93,15 @@ for i in range(2):
 # Train
 train = []
 train_head = []
-trainSpeed = 0.1
-trainBoxWidth = 450
+headWidth = 450
 # Headbox
-th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - 525, WIDTH + trainBoxWidth, HEIGHT - 325
+th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - 525, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(th_x1, th_y1, th_x2, th_y2, fill="brown", outline=""))
 # Headbox 2
-th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + 200, HEIGHT - 655, WIDTH + trainBoxWidth, HEIGHT - 325
+th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + 200, HEIGHT - 655, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(th2_x1, th2_y1, th_x2, th_y2, fill="brown", outline=""))
 # Window decoration
-wd_x1, wd_y1, wd_x2, wd_y2 = WIDTH + 230, HEIGHT - 625, WIDTH + trainBoxWidth - 30, HEIGHT - 450
+wd_x1, wd_y1, wd_x2, wd_y2 = WIDTH + 230, HEIGHT - 625, WIDTH + headWidth - 30, HEIGHT - 450
 train_head.append(screen.create_rectangle(wd_x1, wd_y1, wd_x2, wd_y2, fill="#c4d93b", outline=""))
 # Chiminey
 c_x1, c_y1, c_x2, c_y2 = WIDTH + 70, HEIGHT - 575, WIDTH + 120, HEIGHT - 480
@@ -133,7 +134,7 @@ wheelPerBox = 3
 wheelsCount = wheelPerBox * len(train)  # Total Wheel
 wheelsRadius = 35
 wh_x = [th_x1 + 80]  # 80 is the distance between rear and front of the wheel and the box
-wh_y = 470
+wh_y = th_y2
 wheelGap = []
 wheels = []
 
@@ -164,6 +165,12 @@ for b in range(boxCount):
     bo_x2.append(bo_x2[-1] + trainBoxWidth + con_len)
     bo_y1.append(bo_y1[b])
     bo_y2.append(bo_y2[b])
+
+## Reverse train:
+r_trainHead = []
+
+rthx1, rthy1, rthx2, rthy2 = 0 - trainBoxWidth, HEIGHT - 250, 0, HEIGHT - 70
+r_trainHead.append(screen.create_rectangle(rthx1, rthy1, rthx2, rthy2, fill="brown", outline=""))
 
 # Loop for the amount of time as our soundEffect music
 endLoop = time.time() + 30
@@ -196,6 +203,11 @@ while time.time() < endLoop:
     smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
     if sm_y - sm_radius <= th2_y1 - 50:
         sm_y = c_y1 - sm_radius
+    if th2_x2 <= 0:
+        sm_x += trainSpeed * 2 * i
+        sm_y = th2_y1 - 30
+        if sm_x >= WIDTH:
+            sm_x = 0
 
     for c in range(connectorCount):
         con_x1[c] -= trainSpeed * i
@@ -208,15 +220,16 @@ while time.time() < endLoop:
         boxes[b] = screen.create_rectangle(bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
 
     screen.update()
-    sleep(0.02)
-    screen.delete(train_head[0], train_head[1], train_head[2], train_head[3], smoke, connector)
-    for w in range(wheelsCount):
-        screen.delete(wheels[w])
-    for c in range(connectorCount):
-        screen.delete(connector[c])
-    for b in range(boxCount):
-        screen.delete(boxes[b])
-    if time.time() > endLoop:
-        os.kill(os.getpid(), signal.SIGINT)
+    sleep(0.03)
 
+    # Individual components delete
+    screen.delete(smoke, connector, r_trainHead[0])
+
+    # Array deleting
+    [screen.delete(train_head[t]) for t in range(len(train_head))]
+    [screen.delete(wheels[w]) for w in range(wheelsCount)]
+    [screen.delete(connector[c]) for c in range(connectorCount)]
+    [screen.delete(boxes[b]) for b in range(boxCount)]
+
+os.kill(os.getpid(), signal.SIGINT)
 screen.mainloop()

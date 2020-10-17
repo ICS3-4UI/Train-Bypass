@@ -1,7 +1,8 @@
 import signal
 from threading import *
-from tkinter import *
 from tkinter import messagebox
+from tkinter import *
+from pymsgbox import *
 from winsound import *
 import os
 from pynput.keyboard import Listener
@@ -36,8 +37,9 @@ def popupMsgBox():
                            "You can't exit until the animation is fully finished!\n\nDon't worry, the program automatically closes once the "
                            "animation is finished!\n\nForce exit by pressing Q on your keyboard")
     messagebox.showinfo("Note", "Please turn on sound for a better experience")
-    soundConfirmation = messagebox.askyesno("Confirmation", "I have my sound turned on")
-    if soundConfirmation:
+    soundConfirmation = confirm(text='Do you have your sound turned on?', title='Confirmation',
+                                buttons=["Yes, I have my sound turned on", "No, I don't want to turn on my sound"])
+    if soundConfirmation == "Yes, I have my sound turned on":
         graphicsThread.start()
         soundEffectThread.start()
         key_listenerThread.start()
