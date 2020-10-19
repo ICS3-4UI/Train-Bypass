@@ -26,7 +26,6 @@ if __name__ == "__main__":
         sys.exit("User ran the wrong script.")
 
 WIDTH, HEIGHT = 1080, 800
-ORIGIN = [WIDTH / 2, HEIGHT / 2]
 
 tk = Tk()
 tk.protocol("WM_DELETE_WINDOW", lambda: None)
@@ -45,6 +44,7 @@ def create_circle(x, y, r, screenName, color):
     return screenName.create_oval(x0, y0, x1, y1, outline="", fill=color)
 
 
+# Ground
 p1, p2 = [0, HEIGHT - 500], [WIDTH + 1, HEIGHT + 1]
 screen.create_rectangle(p1, p2, fill="#807E78", outline="")
 

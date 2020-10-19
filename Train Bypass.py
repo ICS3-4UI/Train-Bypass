@@ -12,7 +12,7 @@ def soundEffect(): PlaySound("assets/bgmusic.wav", SND_FILENAME)
 
 
 def graphics():
-    import graphics  # Please mark my graphics @ graphics.py in the same directory
+    import graphics  # Pure graphics and animation script @ graphics.py in the same directory
 
 
 def on_press(key):
