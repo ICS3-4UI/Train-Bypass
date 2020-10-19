@@ -7,7 +7,12 @@ import random as rd
 import time
 
 # EDIT ME :)
-boxCount = 14
+boxCount = 7
+"""
+WARNING: No algorithm for setting the wheel based on trainBoxWidth, 
+so the wheel might be off if you adjust this. 
+But still try to adjust this for fun!
+"""
 trainBoxWidth = 450
 trainSpeed = 0.15
 
@@ -166,11 +171,24 @@ for b in range(boxCount):
     bo_y1.append(bo_y1[b])
     bo_y2.append(bo_y2[b])
 
-## Reverse train:
-r_trainHead = []
+boco_x1 = [bo_x1[0] - 13]
+boco_y1 = [bo_y1[0] - 15]
+boco_x2 = [bo_x2[0] + 13]
+boco_y2 = [bo_y1[0] + 15]
+box_cover = []
 
-rthx1, rthy1, rthx2, rthy2 = 0 - trainBoxWidth, HEIGHT - 250, 0, HEIGHT - 70
-r_trainHead.append(screen.create_rectangle(rthx1, rthy1, rthx2, rthy2, fill="brown", outline=""))
+for bc in range(boxCount):
+    box_cover.append(screen.create_rectangle(boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black"))
+    boco_x1.append(bo_x1[bc + 1] - 13)
+    boco_x2.append(bo_x2[bc + 1] + 13)
+    boco_y1.append(boco_y1[bc])
+    boco_y2.append(boco_y2[bc])
+
+## Reverse train:
+# r_trainHead = []
+#
+# rthx1, rthy1, rthx2, rthy2 = 0 - trainBoxWidth, HEIGHT - 250, 0, HEIGHT - 70
+# r_trainHead.append(screen.create_rectangle(rthx1, rthy1, rthx2, rthy2, fill="brown", outline=""))
 
 # Loop for the amount of time as our soundEffect music
 endLoop = time.time() + 30
@@ -219,17 +237,23 @@ while time.time() < endLoop:
         bo_x2[b] -= trainSpeed * i
         boxes[b] = screen.create_rectangle(bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
 
+    for bc in range(boxCount):
+        boco_x1[bc] -= trainSpeed * i
+        boco_x2[bc] -= trainSpeed * i
+        box_cover[bc] = screen.create_rectangle(boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black")
+
     screen.update()
-    sleep(0.03)
+    sleep(0.02)
 
     # Individual components delete
-    screen.delete(smoke, connector, r_trainHead[0])
+    screen.delete(smoke)
 
     # Array deleting
     [screen.delete(train_head[t]) for t in range(len(train_head))]
     [screen.delete(wheels[w]) for w in range(wheelsCount)]
     [screen.delete(connector[c]) for c in range(connectorCount)]
     [screen.delete(boxes[b]) for b in range(boxCount)]
+    [screen.delete(box_cover[bc]) for bc in range(boxCount)]
 
 os.kill(os.getpid(), signal.SIGINT)
 screen.mainloop()
