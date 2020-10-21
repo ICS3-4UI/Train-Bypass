@@ -6,15 +6,12 @@ from tkinter import messagebox
 import random as rd
 import time
 
-# EDIT ME :)
-boxCount = 7
-"""
-WARNING: No algorithm for setting the wheel based on trainBoxWidth, 
-so the wheel might be off if you adjust this. 
-But still try to adjust this for fun!
-"""
-trainBoxWidth = 450
+# EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
+boxCount = 14
+trainBoxWidth = 510  # Greater than or equal to 450
+con_len = 75  # Connector length (Dynamic)
 trainSpeed = 0.15
+wheelColor = "chocolate2"
 
 if __name__ == "__main__":
     tk = Tk()
@@ -24,6 +21,14 @@ if __name__ == "__main__":
 
     if not confirmation:
         sys.exit("User ran the wrong script.")
+
+    if trainBoxWidth < 450:
+        sys.exit("Train Box Width cannot be less than 450, otherwise it will look distorted")
+else:
+    if trainBoxWidth < 450:
+        # Replicate sys.exit red text effect if module is being imported
+        print("\033[91m" + "Train Box Width cannot be less than 450, otherwise it will look distorted" + "\x1b[0m")
+        os.kill(os.getpid(), signal.SIGINT)
 
 WIDTH, HEIGHT = 1080, 800
 
@@ -98,7 +103,7 @@ for i in range(2):
 # Train
 train = []
 train_head = []
-headWidth = 450
+headWidth = trainBoxWidth
 # Headbox
 th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - 525, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(th_x1, th_y1, th_x2, th_y2, fill="brown", outline=""))
@@ -119,7 +124,7 @@ smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
 
 train.append(train_head)
 
-con_len = 50
+# Connector
 con_x1, con_y1, con_x2, con_y2 = [th_x2], [th_y2 - 40], [th2_x2 + con_len], [th_y2 - 20]
 connectorCount = boxCount
 connector = []
@@ -134,29 +139,7 @@ for c in range(connectorCount):
 for b in range(boxCount):
     train.append(b)
 
-# Wheels
-wheelPerBox = 3
-wheelsCount = wheelPerBox * len(train)  # Total Wheel
-wheelsRadius = 35
-wh_x = [th_x1 + 80]  # 80 is the distance between rear and front of the wheel and the box
-wh_y = th_y2
-wheelGap = []
-wheels = []
-
-for wg in range(1, wheelsCount + 1):
-    if wg % 3 == 0:
-        if wg == 0:
-            wheelGap.append(140)
-        else:
-            wheelGap.append(220)
-    else:
-        wheelGap.append(140)
-
-for w in range(wheelsCount):
-    wheels.append(create_circle(wh_x[w], wh_y, wheelsRadius, screen, color="red"))
-
-    wh_x.append(wh_x[-1] + wheelGap[w])
-
+# Box
 bo_x1 = [con_x2[0]]
 bo_y1 = [th2_y1]
 bo_x2 = [con_x2[0] + trainBoxWidth]
@@ -171,6 +154,42 @@ for b in range(boxCount):
     bo_y1.append(bo_y1[b])
     bo_y2.append(bo_y2[b])
 
+# Wheels
+wheelPerBox = 0
+if 450 <= trainBoxWidth <= 500:
+    wheelPerBox = 3
+elif 500 <= trainBoxWidth <= 600:
+    wheelPerBox = 4
+wheelsCount = wheelPerBox * len(train)  # Total Wheel
+wheelsRadius = 35
+wh_x = [th_x1 + 80]  # 80 is the distance between rear and front of the wheel and the box
+wh_y = th_y2
+wheelGap = []
+wheels = []
+
+for wg in range(wheelsCount):
+    # Make the wheel gap a linear relationship
+    if wheelPerBox == 3:
+        wheelGap.append((3 / 5) * trainBoxWidth - 130)
+    elif wheelPerBox == 4:
+        wheelGap.append((3 / 10) * trainBoxWidth - 35)
+
+boxIterator = 0
+for w in range(wheelsCount):
+    wheels.append(create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColor))
+
+    # Align wheels so it is always in fixed position
+    if w == wheelPerBox - 1:
+        wh_x.append(bo_x1[0] + 80)
+        boxIterator += 1
+    else:
+        if w > 2 and (w - (wheelPerBox - 1)) % wheelPerBox == 0:
+            wh_x.append(bo_x1[boxIterator] + 80)
+            boxIterator += 1
+        else:
+            wh_x.append(wh_x[-1] + wheelGap[w])
+
+# Black box cover on each box
 boco_x1 = [bo_x1[0] - 13]
 boco_y1 = [bo_y1[0] - 15]
 boco_x2 = [bo_x2[0] + 13]
@@ -193,7 +212,7 @@ while time.time() < endLoop:
     i += 1
     for w in range(wheelsCount):
         wh_x[w] -= trainSpeed * i
-        wheels[w] = create_circle(wh_x[w], wh_y, wheelsRadius, screen, color="red")
+        wheels[w] = create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColor)
 
     th_x1 -= trainSpeed * i
     th_x2 -= trainSpeed * i
