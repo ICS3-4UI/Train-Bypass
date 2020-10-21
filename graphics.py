@@ -6,12 +6,20 @@ from tkinter import messagebox
 import random as rd
 import time
 
-# EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-boxCount = 14
-trainBoxWidth = 510  # Greater than or equal to 450
-con_len = 75  # Connector length (Dynamic)
-trainSpeed = 0.15
-wheelColor = "chocolate2"
+promptUserInp = False
+
+if not promptUserInp:
+    # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
+    boxCount = 14
+    trainBoxWidth = 510  # Greater than or equal to 450
+    con_len = 75  # Connector length (Dynamic)
+    trainSpeed = 0.15
+    wheelColor = "chocolate2"
+else:
+    boxCount = int(input("Amount of box after train head >> "))
+    trainBoxWidth = int(input("Each box's width (Must be less than 450) >> "))  # Greater than or equal to 450
+    con_len = int(input("Connector's length between each box(Must be less than 450) >> "))  # Connector length (Dynamic)
+    trainSpeed = 0.15
 
 if __name__ == "__main__":
     tk = Tk()
@@ -113,7 +121,7 @@ train_head.append(screen.create_rectangle(th2_x1, th2_y1, th_x2, th_y2, fill="br
 # Window decoration
 wd_x1, wd_y1, wd_x2, wd_y2 = WIDTH + 230, HEIGHT - 625, WIDTH + headWidth - 30, HEIGHT - 450
 train_head.append(screen.create_rectangle(wd_x1, wd_y1, wd_x2, wd_y2, fill="#c4d93b", outline=""))
-# Chiminey
+# Chimney
 c_x1, c_y1, c_x2, c_y2 = WIDTH + 70, HEIGHT - 575, WIDTH + 120, HEIGHT - 480
 train_head.append(screen.create_rectangle(c_x1, c_y1, c_x2, c_y2, fill="black", outline="black"))
 # Smoke
@@ -270,5 +278,6 @@ while time.time() < endLoop:
     [screen.delete(boxes[b]) for b in range(boxCount)]
     [screen.delete(box_cover[bc]) for bc in range(boxCount)]
 
+# Kills current script even when being imported
 os.kill(os.getpid(), signal.SIGINT)
 screen.mainloop()
