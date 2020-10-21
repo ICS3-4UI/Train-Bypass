@@ -1,8 +1,9 @@
 # Train Bypass
 ## By Andrew Yang
 
+1. Download as zip, or if you have git installed on your machine, run ``git clone https://github.com/andrewics3u/Train-Bypass`` on your command prompt or terminal.
 
-Please run `pip install -r requirements.txt` before running **Train Bypass.py**
+2. Please run `pip install -r requirements.txt` before running **Train Bypass.py**
 
 For only the graphics script, view **graphics.py**
 
