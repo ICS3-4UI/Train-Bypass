@@ -184,14 +184,10 @@ for bc in range(boxCount):
     boco_y1.append(boco_y1[bc])
     boco_y2.append(boco_y2[bc])
 
-## Reverse train:
-# r_trainHead = []
-#
-# rthx1, rthy1, rthx2, rthy2 = 0 - trainBoxWidth, HEIGHT - 250, 0, HEIGHT - 70
-# r_trainHead.append(screen.create_rectangle(rthx1, rthy1, rthx2, rthy2, fill="brown", outline=""))
-
 # Loop for the amount of time as our soundEffect music
+# The sound effect is 30 seconds
 endLoop = time.time() + 30
+# Set iterator
 i = 0
 while time.time() < endLoop:
     i += 1
