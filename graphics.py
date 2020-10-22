@@ -1,3 +1,4 @@
+import math
 import os
 import signal
 from time import sleep
@@ -7,21 +8,23 @@ import random as rd
 import time
 
 # Input variables by terminal or no?
-promptUserInp = True
+promptUserInp = False
 
 if not promptUserInp:
+
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-    boxCount = 18
-    trainBoxWidth = 510  # Greater than or equal to 450
+
+    boxCount = 13
+    trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
     trainSpeed = 0.15
     wheelColour = "chocolate2"
 else:
     boxCount = int(input("Amount of box after train head >> "))
-    trainBoxWidth = int(input("Each box's width (Must be less than 450) >> "))  # Greater than or equal to 450
+    trainBoxWidth = int(input("Each box's width (Must be more than 450) >> "))  # Greater than or equal to 450
     con_len = int(input("Connector's length between each box (Recommended: 75) >> "))  # Connector length (Dynamic)
-    trainSpeed = input("Train speed (Recommended: 0.15) >> ")
-    wheelColour = input("Customize your wheel colour >> ")
+    trainSpeed = float(input("Train speed (Recommended: 0.15) >> "))
+    wheelColour = str(input("Customize your wheel colour >> "))
 
 if __name__ == "__main__":
     tk = Tk()
@@ -172,9 +175,10 @@ elif 500 <= trainBoxWidth <= 600:
 wheelsCount = wheelPerBox * len(train)  # Total Wheel
 wheelsRadius = 35
 wh_x = [th_x1 + 80]  # 80 is the distance between rear and front of the wheel and the box
-wh_y = th_y2
+wh_y = [th_y2]
 wheelGap = []
 wheels = []
+wheel_bounce = [rd.randint(5, 10) for _ in range(wheelsCount)]
 
 for wg in range(wheelsCount):
     # Make the wheel gap a linear relationship
@@ -185,7 +189,9 @@ for wg in range(wheelsCount):
 
 boxIterator = 0
 for w in range(wheelsCount):
-    wheels.append(create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColour))
+    wheels.append(create_circle(wh_x[w], wh_y[w], wheelsRadius, screen, color=wheelColour))
+
+    wh_y.append(wh_y[w])
 
     # Align wheels so it is always in fixed position
     if w == wheelPerBox - 1:
@@ -221,7 +227,12 @@ while time.time() < endLoop:
     i += 1
     for w in range(wheelsCount):
         wh_x[w] -= trainSpeed * i
-        wheels[w] = create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColour)
+        if wh_y[w] >= th_y2:
+            wh_y[w] -= wheel_bounce[w]
+        else:
+            wh_y[w] += wheel_bounce[w]
+
+        wheels[w] = create_circle(wh_x[w], wh_y[w], wheelsRadius, screen, color=wheelColour)
 
     th_x1 -= trainSpeed * i
     th_x2 -= trainSpeed * i
@@ -260,6 +271,10 @@ while time.time() < endLoop:
         bo_x1[b] -= trainSpeed * i
         bo_x2[b] -= trainSpeed * i
         boxes[b] = screen.create_rectangle(bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
+
+    # Last box of the train out of the screen, end, but not immediately
+    if bo_x2[boxCount - 1] <= -150:
+        break
 
     for bc in range(boxCount):
         boco_x1[bc] -= trainSpeed * i
