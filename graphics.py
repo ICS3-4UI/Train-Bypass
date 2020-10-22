@@ -6,20 +6,22 @@ from tkinter import messagebox
 import random as rd
 import time
 
-promptUserInp = False
+# Input variables by terminal or no?
+promptUserInp = True
 
 if not promptUserInp:
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-    boxCount = 14
+    boxCount = 18
     trainBoxWidth = 510  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
     trainSpeed = 0.15
-    wheelColor = "chocolate2"
+    wheelColour = "chocolate2"
 else:
     boxCount = int(input("Amount of box after train head >> "))
     trainBoxWidth = int(input("Each box's width (Must be less than 450) >> "))  # Greater than or equal to 450
-    con_len = int(input("Connector's length between each box(Must be less than 450) >> "))  # Connector length (Dynamic)
-    trainSpeed = 0.15
+    con_len = int(input("Connector's length between each box (Recommended: 75) >> "))  # Connector length (Dynamic)
+    trainSpeed = input("Train speed (Recommended: 0.15) >> ")
+    wheelColour = input("Customize your wheel colour >> ")
 
 if __name__ == "__main__":
     tk = Tk()
@@ -34,14 +36,13 @@ if __name__ == "__main__":
         sys.exit("Train Box Width cannot be less than 450, otherwise it will look distorted")
 else:
     if trainBoxWidth < 450:
-        # Replicate sys.exit red text effect if module is being imported
-        print("\033[91m" + "Train Box Width cannot be less than 450, otherwise it will look distorted" + "\x1b[0m")
+        print("Train Box Width cannot be less than 450, otherwise it will look distorted")
         os.kill(os.getpid(), signal.SIGINT)
 
 WIDTH, HEIGHT = 1080, 800
 
 tk = Tk()
-tk.protocol("WM_DELETE_WINDOW", lambda: None)
+tk.protocol("WM_DELETE_WINDOW", lambda: os.kill(os.getpid(), signal.SIGINT))
 tk.resizable(0, 0)
 
 tk.title("Train Bypass")
@@ -116,10 +117,10 @@ headWidth = trainBoxWidth
 th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - 525, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(th_x1, th_y1, th_x2, th_y2, fill="brown", outline=""))
 # Headbox 2
-th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + 200, HEIGHT - 655, WIDTH + headWidth, HEIGHT - 325
+th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + 250, HEIGHT - 655, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(th2_x1, th2_y1, th_x2, th_y2, fill="brown", outline=""))
 # Window decoration
-wd_x1, wd_y1, wd_x2, wd_y2 = WIDTH + 230, HEIGHT - 625, WIDTH + headWidth - 30, HEIGHT - 450
+wd_x1, wd_y1, wd_x2, wd_y2 = th2_x1 + 30, HEIGHT - 625, WIDTH + headWidth - 30, HEIGHT - 450
 train_head.append(screen.create_rectangle(wd_x1, wd_y1, wd_x2, wd_y2, fill="#c4d93b", outline=""))
 # Chimney
 c_x1, c_y1, c_x2, c_y2 = WIDTH + 70, HEIGHT - 575, WIDTH + 120, HEIGHT - 480
@@ -184,7 +185,7 @@ for wg in range(wheelsCount):
 
 boxIterator = 0
 for w in range(wheelsCount):
-    wheels.append(create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColor))
+    wheels.append(create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColour))
 
     # Align wheels so it is always in fixed position
     if w == wheelPerBox - 1:
@@ -220,7 +221,7 @@ while time.time() < endLoop:
     i += 1
     for w in range(wheelsCount):
         wh_x[w] -= trainSpeed * i
-        wheels[w] = create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColor)
+        wheels[w] = create_circle(wh_x[w], wh_y, wheelsRadius, screen, color=wheelColour)
 
     th_x1 -= trainSpeed * i
     th_x2 -= trainSpeed * i
