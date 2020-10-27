@@ -63,7 +63,7 @@ tk.protocol("WM_DELETE_WINDOW", lambda: os.kill(os.getpid(), signal.SIGINT))
 tk.resizable(0, 0)
 
 tk.title("Train Bypass")
-screen = Canvas(tk, width=WIDTH, height=HEIGHT, background="#A5B7BD")
+screen = Canvas(tk, width=WIDTH, height=HEIGHT, background="#87CEEB")
 screen.pack()
 
 # Ground
