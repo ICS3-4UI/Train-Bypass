@@ -45,8 +45,8 @@ else:
         print("Train Box Width cannot be less than 450, otherwise it will look distorted")
         os.kill(os.getpid(), signal.SIGINT)
 
-# Essential functions
 
+# Essential functions
 
 def create_circle(x, y, r, screenName, color):
     x0 = x - r
@@ -262,10 +262,10 @@ for w in range(wheelsCount):
             wh_x.append(wh_x[-1] + wheelGap[w])
 
 # Black box cover on each box
-boco_x1 = [bo_x1[0] - 13]
-boco_y1 = [bo_y1[0] - 15]
-boco_x2 = [bo_x2[0] + 13]
-boco_y2 = [bo_y1[0] + 15]
+boco_x1 = [bo_x1[0] - 13]   # 13 off the left
+boco_y1 = [bo_y1[0] - 15]  # 15 above the bottom
+boco_x2 = [bo_x2[0] + 13]  # 13 off the right
+boco_y2 = [bo_y1[0] + 15]  # 15 below the top
 box_cover = []
 
 for bc in range(boxCount):
@@ -276,7 +276,7 @@ for bc in range(boxCount):
     boco_y1.append(boco_y1[bc])
     boco_y2.append(boco_y2[bc])
 
-
+# Wait for 4 seconds after the traffic light turns red
 waitWithGraphics(4)
 
 # Loop for the amount of time as our soundEffect music
