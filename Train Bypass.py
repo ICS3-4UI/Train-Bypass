@@ -1,5 +1,6 @@
 import signal
 from threading import *
+from time import sleep
 from tkinter import messagebox
 from tkinter import *
 from pymsgbox import *
@@ -9,8 +10,8 @@ from pynput.keyboard import Listener
 
 
 def popupMsgBox():
-    tk = Tk()
-    tk.withdraw()
+    root = Tk()
+    root.withdraw()
     messagebox.showinfo("Note", "Please turn on sound for a better experience")
     soundConfirmation = confirm(text='Do you have your sound turned on?', title='Confirmation',
                                 buttons=["Yes, I have my sound turned on", "No, I don't want to turn on my sound"])
@@ -19,9 +20,12 @@ def popupMsgBox():
         soundEffectThread.start()
     else:
         messagebox.showerror("Cannot Run Program", "Please turn on sound and try again!")
+        sys.exit("This program requires sound.")
 
 
-def soundEffect(): PlaySound("assets/bgmusic.wav", SND_FILENAME)
+def soundEffect():
+    sleep(3)
+    PlaySound("assets/bgmusic.wav", SND_FILENAME)
 
 
 def graphics():

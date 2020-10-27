@@ -11,9 +11,7 @@ import time
 promptUserInp = False
 
 if not promptUserInp:
-
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-
     boxCount = 13
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
@@ -42,6 +40,22 @@ else:
         print("Train Box Width cannot be less than 450, otherwise it will look distorted")
         os.kill(os.getpid(), signal.SIGINT)
 
+
+def create_circle(x, y, r, screenName, color):
+    x0 = x - r
+    y0 = y - r
+    x1 = x + r
+    y1 = y + r
+    return screenName.create_oval(x0, y0, x1, y1, outline="", fill=color)
+
+
+def waitWithGraphics(seconds):
+    # wait
+    endLoop = time.time() + seconds
+    while time.time() < endLoop:
+        screen.update()
+
+
 WIDTH, HEIGHT = 1080, 800
 
 tk = Tk()
@@ -51,15 +65,6 @@ tk.resizable(0, 0)
 tk.title("Train Bypass")
 screen = Canvas(tk, width=WIDTH, height=HEIGHT, background="#A5B7BD")
 screen.pack()
-
-
-def create_circle(x, y, r, screenName, color):
-    x0 = x - r
-    y0 = y - r
-    x1 = x + r
-    y1 = y + r
-    return screenName.create_oval(x0, y0, x1, y1, outline="", fill=color)
-
 
 # Ground
 p1, p2 = [0, HEIGHT - 500], [WIDTH + 1, HEIGHT + 1]
@@ -77,8 +82,6 @@ for l in range(3):
     lights.append(create_circle(li_x[l], li_y[l], l_rad, screen, color="grey"))
     li_x.append(li_x[l])
     li_y.append(li_y[-1] + 2 * l_rad + 20)
-
-lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="red")
 
 colour = ["black", "silver", "grey", "slategray"]
 # Asphalt
@@ -125,6 +128,15 @@ for i in range(2):
     train_tracks_2.append(screen.create_line(tt2_x[i], tt2_y[i], WIDTH + 1, tt2_y[i], fill="black", width=20))
     tt2_x.append(0)
     tt2_y.append(int(tt2_y[-1]) + 150)
+
+lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
+waitWithGraphics(2)
+lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="grey")
+lights[1] = create_circle(li_x[1], li_y[1], l_rad, screen, color="orange")
+waitWithGraphics(2)
+lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="grey")
+lights[1] = create_circle(li_x[1], li_y[1], l_rad, screen, color="grey")
+lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="red")
 
 # Train
 train = []
@@ -231,6 +243,8 @@ for bc in range(boxCount):
     boco_x2.append(bo_x2[bc + 1] + 13)
     boco_y1.append(boco_y1[bc])
     boco_y2.append(boco_y2[bc])
+
+waitWithGraphics(4)
 
 # Loop for the amount of time as our soundEffect music
 # The sound effect is 30 seconds
