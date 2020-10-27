@@ -1,12 +1,9 @@
-import signal
 from threading import *
 from time import sleep
 from tkinter import messagebox
 from tkinter import *
 from pymsgbox import *
 from winsound import *
-import os
-from pynput.keyboard import Listener
 
 
 def popupMsgBox():
