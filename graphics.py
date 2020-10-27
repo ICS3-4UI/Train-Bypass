@@ -24,6 +24,7 @@ else:
     trainSpeed = float(input("Train speed (Recommended: 0.15) >> "))
     wheelColour = str(input("Customize your wheel colour >> "))
 
+# Avoid running the script directly, the recommended way is to run on a separate script.
 if __name__ == "__main__":
     tk = Tk()
     tk.withdraw()
@@ -40,6 +41,7 @@ else:
         print("Train Box Width cannot be less than 450, otherwise it will look distorted")
         os.kill(os.getpid(), signal.SIGINT)
 
+# Essential functions
 
 def create_circle(x, y, r, screenName, color):
     x0 = x - r
@@ -55,6 +57,8 @@ def waitWithGraphics(seconds):
     while time.time() < endLoop:
         screen.update()
 
+
+# Init TKinter window
 
 WIDTH, HEIGHT = 1080, 800
 
@@ -129,6 +133,8 @@ for i in range(2):
     tt2_x.append(0)
     tt2_y.append(int(tt2_y[-1]) + 150)
 
+# Animate traffic lights
+
 lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
 waitWithGraphics(2)
 lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="grey")
@@ -159,6 +165,7 @@ sm_radius = rd.randint(10, 30)
 sm_x, sm_y = rd.randint(c_x1 - 5, c_x2 + 5), rd.randint(c_y1 - 10, c_y1)
 sm_colors = [f"gray{i}" for i in range(50, 90)]
 smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
+
 
 train.append(train_head)
 
@@ -244,6 +251,7 @@ for bc in range(boxCount):
     boco_y1.append(boco_y1[bc])
     boco_y2.append(boco_y2[bc])
 
+
 waitWithGraphics(4)
 
 # Loop for the amount of time as our soundEffect music
@@ -323,9 +331,7 @@ while time.time() < endLoop:
     # Array deleting
     [screen.delete(train_head[t]) for t in range(len(train_head))]
     [screen.delete(wheels[w]) for w in range(wheelsCount)]
-    [screen.delete(connector[c]) for c in range(connectorCount)]
-    [screen.delete(boxes[b]) for b in range(boxCount)]
-    [screen.delete(box_cover[bc]) for bc in range(boxCount)]
+    [screen.delete(boxes[b], box_cover[b], connector[b]) for b in range(boxCount)]
 
 # Kills current script even when being imported
 os.kill(os.getpid(), signal.SIGINT)

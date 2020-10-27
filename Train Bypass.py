@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import *
 from winsound import *
 
+# Avoid errors if required pip modules isn't installed.
 try:
     from pymsgbox import *
 except ModuleNotFoundError:
@@ -11,6 +12,7 @@ except ModuleNotFoundError:
     sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
 
 
+# Messagebox to make the user confirm they've turned on sound
 def popupMsgBox():
     root = Tk()
     root.withdraw()
@@ -26,14 +28,18 @@ def popupMsgBox():
 
 
 def soundEffect():
+    # Wait 3 second to match traffic light
+    # Start playing once light turn orange (Animation starts)
     sleep(3)
     PlaySound("assets/bgmusic.wav", SND_FILENAME)
 
 
 def graphics():
+    # Tkinter animation is in another script, importing the module to use it.
     import graphics  # Pure graphics and animation script @ graphics.py in the same directory
 
 
+# Initiate threads (Graphics and sound needs to be on independent threads)
 graphicsThread = Thread(target=graphics)
 soundEffectThread = Thread(target=soundEffect)
 
