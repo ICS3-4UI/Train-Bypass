@@ -12,7 +12,7 @@ except ModuleNotFoundError:
     sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
 
 
-# Messagebox to make the user confirm they've turned on sound
+# Messagebox to make the user confirm they've turned on sound before animation plays
 def popupMsgBox():
     root = Tk()
     root.withdraw()
@@ -20,6 +20,7 @@ def popupMsgBox():
     soundConfirmation = confirm(text='Do you have your sound turned on?', title='Confirmation',
                                 buttons=["Yes, I have my sound turned on", "No, I don't want to turn on my sound"])
     if soundConfirmation == "Yes, I have my sound turned on":
+        # Start the animation by executing the required threads.
         graphicsThread.start()
         soundEffectThread.start()
     else:
