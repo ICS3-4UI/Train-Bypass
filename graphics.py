@@ -17,7 +17,7 @@ if not promptUserInp:
     boxCount = 13
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
-    trainSpeed = 0.15
+    trainSpeed = 0.12
     wheelColour = "chocolate2"
 else:
     boxCount = int(input("Amount of box after train head >> "))
@@ -65,6 +65,21 @@ def create_circle(x, y, r, screenName, color):
 p1, p2 = [0, HEIGHT - 500], [WIDTH + 1, HEIGHT + 1]
 screen.create_rectangle(p1, p2, fill="#807E78", outline="")
 
+# Pole
+screen.create_rectangle(100, 0, 170, p1[1], fill="#63615a", outline="")
+
+# Traffic light
+l_rad = 30
+li_x, li_y = [100 + l_rad + 5], [l_rad + 20]
+lights = []
+
+for l in range(3):
+    lights.append(create_circle(li_x[l], li_y[l], l_rad, screen, color="grey"))
+    li_x.append(li_x[l])
+    li_y.append(li_y[-1] + 2 * l_rad + 20)
+
+lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="red")
+
 colour = ["black", "silver", "grey", "slategray"]
 # Asphalt
 for i in range(3000):
@@ -77,8 +92,7 @@ for i in range(3000):
 
 # Train tracks
 
-# Global track variables:
-cross_ties_count = 20
+cross_ties_count = 20  # 20 seems the most realistic, however, feel free to adjust this.
 
 cross_ties_t_1 = []
 ctt1_x, ctt1_y = [0], [HEIGHT - 475]
@@ -256,7 +270,7 @@ while time.time() < endLoop:
     smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
     if sm_y - sm_radius <= th2_y1 - 50:
         sm_y = c_y1 - sm_radius
-    if th2_x2 <= 0:
+    if th2_x2 <= 0 and bo_x2[boxCount - 1] > 0:
         sm_x += trainSpeed * 2 * i
         sm_y = th2_y1 - 30
         if sm_x >= WIDTH:
@@ -272,14 +286,18 @@ while time.time() < endLoop:
         bo_x2[b] -= trainSpeed * i
         boxes[b] = screen.create_rectangle(bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
 
-    # Last box of the train out of the screen, end, but not immediately
-    if bo_x2[boxCount - 1] <= -150:
-        break
-
     for bc in range(boxCount):
         boco_x1[bc] -= trainSpeed * i
         boco_x2[bc] -= trainSpeed * i
         box_cover[bc] = screen.create_rectangle(boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black")
+
+    # Last box of the train out of the screen, end, but not immediately
+    if bo_x2[boxCount - 1] <= 0:
+        lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="grey")
+        lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
+        if bo_x2[boxCount] <= -350:
+            print("Animation ended: Train passed before the sound effect finished playing.")
+            break
 
     screen.update()
     sleep(0.02)
