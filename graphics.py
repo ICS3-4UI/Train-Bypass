@@ -15,7 +15,7 @@ if not promptUserInp:
     boxCount = 13
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
-    trainSpeed = 0.12
+    trainSpeed = 0.1
     wheelColour = "chocolate2"
 else:
     boxCount = int(input("Amount of box after train head >> "))
@@ -284,11 +284,12 @@ while time.time() < endLoop:
     smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
     if sm_y - sm_radius <= th2_y1 - 50:
         sm_y = c_y1 - sm_radius
-    if th2_x2 <= 0 and bo_x2[boxCount - 1] > 0:
+    if th2_x2 <= 0:
         sm_x += trainSpeed * 2 * i
         sm_y = th2_y1 - 30
         if sm_x >= WIDTH:
-            sm_x = 0
+            if bo_x2[boxCount - 1] >= 0:
+                sm_x = 0
 
     for c in range(connectorCount):
         con_x1[c] -= trainSpeed * i
@@ -306,7 +307,7 @@ while time.time() < endLoop:
         box_cover[bc] = screen.create_rectangle(boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black")
 
     # Last box of the train out of the screen, end, but not immediately
-    if bo_x2[boxCount - 1] <= 0:
+    if bo_x2[boxCount - 1] <= -20:
         lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="grey")
         lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
         if bo_x2[boxCount] <= -350:

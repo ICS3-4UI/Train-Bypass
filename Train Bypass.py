@@ -2,8 +2,13 @@ from threading import *
 from time import sleep
 from tkinter import messagebox
 from tkinter import *
-from pymsgbox import *
 from winsound import *
+
+try:
+    from pymsgbox import *
+except ModuleNotFoundError:
+    print("Required modules not installed!")
+    sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
 
 
 def popupMsgBox():
