@@ -31,8 +31,10 @@ def popupMsgBox():
 def soundEffect():
     # Wait 3 second to match traffic light
     # Start playing once light turn orange (Animation starts)
-    sleep(3)
+    sleep(1)
     PlaySound("assets/bgmusic.wav", SND_FILENAME)
+    # sleep(1)
+    # PlaySound("assets/bgmusic.wav", SND_FILENAME)
 
 
 def graphics():

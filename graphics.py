@@ -10,13 +10,19 @@ import time
 # Input variables by terminal or no?
 promptUserInp = False
 
+### GLOBAL VARIABLES ###
+
 if not promptUserInp:
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-    boxCount = 10
+    boxCount = 13
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
-    trainSpeed = 0.1
+    trainSpeed = 1
     wheelColour = "chocolate2"
+
+    # Enable trains coming from both directions.
+    # NOTE: This will lag the animation like crazy
+    enableSecondTrain = False
 else:
     boxCount = int(input("Amount of box after train head >> "))
     # Greater than or equal to 450
@@ -26,11 +32,12 @@ else:
         input("Connector's length between each box (Recommended: 75) >> "))
     trainSpeed = float(input("Train speed (Recommended: 0.15) >> "))
     wheelColour = str(input("Customize your wheel colour >> "))
+    enableSecondTrain = True if str(input("Would you like second train? NOTE: This will lag! (Y/N) >> ")).upper == "Y" else False
 
 # Avoid running the script directly, the recommended way is to run on a separate script.
 if __name__ == "__main__":
     tk = Tk()
-    tk.withdraw()
+    tk.withdraw()  # Display messagebox without a Tkinter window.
     confirmation = messagebox.askyesno("Confirmation",
                                        "I do not recommend running the script directly as there is no sound effects, would you like to proceed?")
 
@@ -38,8 +45,7 @@ if __name__ == "__main__":
         sys.exit("User ran the wrong script.")
 
     if trainBoxWidth < 450:
-        sys.exit(
-            "Train Box Width cannot be less than 450, otherwise it will look distorted")
+        sys.exit("Train Box Width cannot be less than 450, otherwise it will look distorted")
 else:
     if trainBoxWidth < 450:
         print("Train Box Width cannot be less than 450, otherwise it will look distorted")
@@ -61,6 +67,14 @@ def waitWithGraphics(seconds):
     endLoop = time.time() + seconds
     while time.time() < endLoop:
         screen.update()
+
+
+def clearArr(*args):
+    try:
+        for arg in args:
+            arg.clear()
+    except:
+        pass
 
 
 # Init TKinter window
@@ -146,7 +160,7 @@ for i in range(2):
 # Animate traffic lights
 
 lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
-waitWithGraphics(2)
+waitWithGraphics(0.5)
 lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="grey")
 lights[1] = create_circle(li_x[1], li_y[1], l_rad, screen, color="orange")
 waitWithGraphics(2)
@@ -154,23 +168,22 @@ lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="grey")
 lights[1] = create_circle(li_x[1], li_y[1], l_rad, screen, color="grey")
 lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="red")
 
-# Train
+# Train 1 #
+
 train = []
 train_head = []
+head_color = rd.choice(["coral4", "tomato4", "wheat4", "ivory4",
+                        "cornsilk4", "snow4", "azure4", "brown", "saddle brown", "dark orange"])
 headWidth = trainBoxWidth
 # Headbox
-th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - \
-    525, WIDTH + headWidth, HEIGHT - 325
-train_head.append(screen.create_rectangle(
-    th_x1, th_y1, th_x2, th_y2, fill="brown", outline=""))
+th_x1, th_y1, th_x2, th_y2 = WIDTH + 2, HEIGHT - 525, WIDTH + headWidth, HEIGHT - 325
+train_head.append(screen.create_rectangle(th_x1, th_y1, th_x2, th_y2, fill=head_color, outline=""))
 # Headbox 2
-th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + \
-    250, HEIGHT - 655, WIDTH + headWidth, HEIGHT - 325
+th2_x1, th2_y1, th2_x2, th2_y2 = WIDTH + 250, HEIGHT - 655, WIDTH + headWidth, HEIGHT - 325
 train_head.append(screen.create_rectangle(
-    th2_x1, th2_y1, th_x2, th_y2, fill="brown", outline=""))
+    th2_x1, th2_y1, th_x2, th_y2, fill=head_color, outline=""))
 # Window decoration
-wd_x1, wd_y1, wd_x2, wd_y2 = th2_x1 + 30, HEIGHT - \
-    625, WIDTH + headWidth - 30, HEIGHT - 450
+wd_x1, wd_y1, wd_x2, wd_y2 = th2_x1 + 30, HEIGHT - 625, WIDTH + headWidth - 30, HEIGHT - 450
 train_head.append(screen.create_rectangle(
     wd_x1, wd_y1, wd_x2, wd_y2, fill="#c4d93b", outline=""))
 # Chimney
@@ -181,9 +194,7 @@ train_head.append(screen.create_rectangle(
 sm_radius = rd.randint(10, 30)
 sm_x, sm_y = rd.randint(c_x1 - 5, c_x2 + 5), rd.randint(c_y1 - 10, c_y1)
 sm_colors = [f"gray{i}" for i in range(50, 90)]
-smoke = create_circle(sm_x, sm_y, sm_radius, screen,
-                      color=rd.choice(sm_colors))
-
+smoke = create_circle(sm_x, sm_y, sm_radius, screen, color=rd.choice(sm_colors))
 
 train.append(train_head)
 
@@ -227,21 +238,25 @@ if 450 <= trainBoxWidth <= 500:
     wheelPerBox = 3
 elif 500 <= trainBoxWidth <= 600:
     wheelPerBox = 4
+elif 600 <= trainBoxWidth <= 700:
+    wheelPerBox = 5
 wheelsCount = wheelPerBox * len(train)  # Total Wheel
 wheelsRadius = 35
 # 80 is the distance between rear and front of the wheel and the box
 wh_x = [th_x1 + 80]
 wh_y = [th_y2]
-wheelGap = []
+wheelGap = 0
 wheels = []
 wheel_bounce = [rd.randint(5, 10) for _ in range(wheelsCount)]
 
 for wg in range(wheelsCount):
-    # Make the wheel gap a linear relationship
+    # Make the wheel gap dynamic using linear relationship
     if wheelPerBox == 3:
-        wheelGap.append((3 / 5) * trainBoxWidth - 130)
+        wheelGap = (3 / 5) * trainBoxWidth - 130
     elif wheelPerBox == 4:
-        wheelGap.append((3 / 10) * trainBoxWidth - 35)
+        wheelGap = (3 / 10) * trainBoxWidth - 35
+    elif wheelPerBox == 5:
+        wheelGap = (23 / 90) * trainBoxWidth - (1973 / 45)
 
 boxIterator = 0
 for w in range(wheelsCount):
@@ -259,25 +274,26 @@ for w in range(wheelsCount):
             wh_x.append(bo_x1[boxIterator] + 80)
             boxIterator += 1
         else:
-            wh_x.append(wh_x[-1] + wheelGap[w])
+            wh_x.append(wh_x[-1] + wheelGap)
 
 # Black box cover on each box
-boco_x1 = [bo_x1[0] - 13]   # 13 off the left
+boco_x1 = [bo_x1[0] - 13]  # 13 off the left
 boco_y1 = [bo_y1[0] - 15]  # 15 above the bottom
 boco_x2 = [bo_x2[0] + 13]  # 13 off the right
 boco_y2 = [bo_y1[0] + 15]  # 15 below the top
 box_cover = []
 
 for bc in range(boxCount):
-    box_cover.append(screen.create_rectangle(
-        boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black"))
+    box_cover.append(screen.create_rectangle(boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black"))
     boco_x1.append(bo_x1[bc + 1] - 13)
     boco_x2.append(bo_x2[bc + 1] + 13)
+
+    # Y-pos remains the same
     boco_y1.append(boco_y1[bc])
     boco_y2.append(boco_y2[bc])
 
-# Wait for 4 seconds after the traffic light turns red
-waitWithGraphics(4)
+# Wait some seconds after the traffic light turns red then let the train pass
+waitWithGraphics(2)
 
 # Loop for the amount of time as our soundEffect music
 # The sound effect is 30 seconds
@@ -299,12 +315,12 @@ while time.time() < endLoop:
     th_x1 -= trainSpeed * i
     th_x2 -= trainSpeed * i
     train_head[0] = screen.create_rectangle(
-        th_x1, th_y1, th_x2, th_y2, fill="brown", outline="")
+        th_x1, th_y1, th_x2, th_y2, fill=head_color, outline="")
 
     th2_x1 -= trainSpeed * i
     th2_x2 -= trainSpeed * i
     train_head[1] = screen.create_rectangle(
-        th2_x1, th2_y1, th_x2, th_y2, fill="brown", outline="")
+        th2_x1, th2_y1, th_x2, th_y2, fill=head_color, outline="")
 
     wd_x1 -= trainSpeed * i
     wd_x2 -= trainSpeed * i
@@ -323,7 +339,7 @@ while time.time() < endLoop:
                           color=rd.choice(sm_colors))
     if sm_y - sm_radius <= th2_y1 - 50:
         sm_y = c_y1 - sm_radius
-    if th2_x2 <= 0:
+    if th2_x2 <= 0 and boxCount != 0:
         sm_x += trainSpeed * 2 * i
         sm_y = th2_y1 - 30
         if sm_x >= WIDTH:
@@ -348,15 +364,14 @@ while time.time() < endLoop:
         box_cover[bc] = screen.create_rectangle(
             boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="black")
 
-    # Last box of the train out of the screen, end, but not immediately
-    if bo_x2[boxCount - 1] <= -20:
-        lights[0] = create_circle(
-            li_x[0], li_y[0], l_rad, screen, color="grey")
-        lights[2] = create_circle(
-            li_x[2], li_y[2], l_rad, screen, color="green")
-        if bo_x2[boxCount] <= -350:
-            print(
-                "Animation ended: Train passed before the sound effect finished playing.")
+    # Check if first train is off the screen
+    if boxCount != 0:
+        # Last box of the train out of the screen, end but not immediately
+        if bo_x2[boxCount - 1] <= -20:
+            break
+    else:
+        # Check head if there are no boxes
+        if th2_x2 <= -20:
             break
 
     screen.update()
@@ -368,8 +383,205 @@ while time.time() < endLoop:
     # Array deleting
     [screen.delete(train_head[t]) for t in range(len(train_head))]
     [screen.delete(wheels[w]) for w in range(wheelsCount)]
-    [screen.delete(boxes[b], box_cover[b], connector[b])
-     for b in range(boxCount)]
+    [screen.delete(boxes[b], box_cover[b], connector[b]) for b in range(boxCount)]
+
+screen.delete(smoke)
+
+### TRAIN 2 ###
+
+# Animation only runs if enableSecondTrain is True
+if enableSecondTrain:
+    clearArr(train, wheels, box_cover, boxes, connector, train_head)
+    # Headbox
+    th_x1, th_y1, th_x2, th_y2 = -2, HEIGHT - \
+                                 280, -2 - headWidth, HEIGHT - 80
+    train_head.append(0)
+    # Headbox 2
+    th2_x1, th2_y1, th2_x2, th2_y2 = th_x2 + 220, HEIGHT - 455, th_x2, HEIGHT - 80
+    train_head.append(0)
+    # Window decoration
+    wd_x1, wd_y1, wd_x2, wd_y2 = th2_x1 - 30, HEIGHT - \
+                                 430, -headWidth + 30, HEIGHT - 220
+    train_head.append(0)
+
+    # Chimney
+    c_x1, c_y1, c_x2, c_y2 = -70, HEIGHT - 335, -120, HEIGHT - 250
+    train_head.append(0)
+
+    # Smoke
+    sm_x = rd.randint(c_x2, c_x1)
+    sm_y = rd.randint(c_y1 - 10, c_y1)
+    smoke = create_circle(sm_x, sm_y, sm_radius, screen,
+                          color=rd.choice(sm_colors))
+
+    train.append(train_head)
+
+    # Connector
+    con_x1, con_y1, con_x2, con_y2 = [th_x2], [th_y2 - 40], [th_x2 - con_len], [th_y2 - 20]
+    connectorCount = boxCount
+
+    for c in range(connectorCount):
+        connector.append(screen.create_rectangle(
+            con_x1[c], con_y1[c], con_x2[c], con_y2[c], fill="goldenrod4", width=4))
+        con_x1.append(con_x1[-1] - con_len - trainBoxWidth)
+        con_x2.append(con_x2[-1] - con_len - trainBoxWidth)
+        con_y1.append(con_y1[c])
+        con_y2.append(con_y2[c])
+
+    for b in range(boxCount):
+        train.append(b)
+
+    # Box
+    bo_x1 = [con_x2[0]]
+    bo_y1 = [th2_y1]
+    bo_x2 = [con_x2[0] - trainBoxWidth]
+    bo_y2 = [th2_y2]
+    box_color = [rd.choice(["coral4", "tomato4", "wheat4", "ivory4",
+                            "cornsilk4", "snow4", "azure4"]) for _ in range(boxCount)]
+
+    for b in range(boxCount):
+        boxes.append(screen.create_rectangle(
+            bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline=""))
+        bo_x1.append(bo_x1[-1] - trainBoxWidth - con_len)
+        bo_x2.append(bo_x2[-1] - trainBoxWidth - con_len)
+        bo_y1.append(bo_y1[b])
+        bo_y2.append(bo_y2[b])
+
+    # Wheels
+    # 80 is the distance between rear and front of the wheel and the box
+    wh_x = [th_x1 - 80]
+    wh_y = [th_y2]
+    wheels = []
+    wheel_bounce = [rd.randint(5, 10) for _ in range(wheelsCount)]
+
+    boxIterator = 0
+    for w in range(wheelsCount):
+        wheels.append(create_circle(
+            wh_x[w], wh_y[w], wheelsRadius, screen, color=wheelColour))
+
+        # No change in Y-pos
+        wh_y.append(wh_y[w])
+
+        # Align wheels so it is always in fixed position
+        if w == wheelPerBox - 1:
+            wh_x.append(bo_x1[0] - 80)
+            boxIterator += 1
+        else:
+            # First box, not head
+            if w > 2 and (w - (wheelPerBox - 1)) % wheelPerBox == 0:
+                wh_x.append(bo_x1[boxIterator] - 80)
+                boxIterator += 1
+            else:
+                wh_x.append(wh_x[-1] - wheelGap)
+
+    # Black box cover on each box
+    boco_x1 = [bo_x1[0] + 13]  # 13 off the left
+    boco_y1 = [bo_y1[0] - 15]  # 15 above the bottom
+    boco_x2 = [bo_x2[0] - 13]  # 13 off the right
+    boco_y2 = [bo_y1[0] + 15]  # 15 below the top
+
+    for bc in range(boxCount):
+        box_cover.append(screen.create_rectangle(
+            boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="#362a42", outline=""))
+        boco_x1.append(bo_x1[bc + 1] + 13)
+        boco_x2.append(bo_x2[bc + 1] - 13)
+        boco_y1.append(boco_y1[bc])
+        boco_y2.append(boco_y2[bc])
+
+    # Loop for the amount of time as our soundEffect music
+    # The sound effect is 30 seconds
+    endLoop = time.time() + 30
+    # Set iterator
+    i = 0
+    while time.time() < endLoop:
+        i += 1
+
+        for w in range(wheelsCount):
+            wh_x[w] += trainSpeed * i
+
+            # Bouncing effect
+            if wh_y[w] >= th_y2:
+                wh_y[w] -= wheel_bounce[w]
+            else:
+                wh_y[w] += wheel_bounce[w]
+
+            wheels[w] = create_circle(
+                wh_x[w], wh_y[w], wheelsRadius, screen, color=wheelColour)
+
+        th_x1 += trainSpeed * i
+        th_x2 += trainSpeed * i
+        train_head[0] = screen.create_rectangle(
+            th_x1, th_y1, th_x2, th_y2, fill=head_color, outline="")
+
+        th2_x1 += trainSpeed * i
+        th2_x2 += trainSpeed * i
+        train_head[1] = screen.create_rectangle(
+            th2_x1, th2_y1, th_x2, th_y2, fill=head_color, outline="")
+
+        wd_x1 += trainSpeed * i
+        wd_x2 += trainSpeed * i
+        train_head[2] = screen.create_rectangle(
+            wd_x1, wd_y1, wd_x2, wd_y2, fill="#c4d93b", outline="")
+
+        c_x1 += trainSpeed * i
+        c_x2 += trainSpeed * i
+        train_head[3] = screen.create_rectangle(
+            c_x1, c_y1, c_x2, c_y2, fill="black", outline="black")
+
+        sm_radius = rd.randint(10, 30)
+        sm_x += trainSpeed * i
+        sm_y -= trainSpeed * i
+        smoke = create_circle(sm_x, sm_y, sm_radius, screen,
+                              color=rd.choice(sm_colors))
+        if sm_y - sm_radius <= th2_y1 - 50:
+            sm_y = c_y1 - sm_radius
+        if th2_x2 >= WIDTH and boxCount != 0:
+            sm_x -= trainSpeed * 2 * i
+            sm_y = th2_y1 + 30
+            if sm_x >= WIDTH:
+                if bo_x2[boxCount - 1] >= 0:
+                    sm_x = 0
+
+        for c in range(connectorCount):
+            con_x1[c] += trainSpeed * i
+            con_x2[c] += trainSpeed * i
+            connector[c] = screen.create_rectangle(
+                con_x1[c], con_y1[c], con_x2[c], con_y2[c], fill="goldenrod4", width=4)
+
+        for b in range(boxCount):
+            bo_x1[b] += trainSpeed * i
+            bo_x2[b] += trainSpeed * i
+            boxes[b] = screen.create_rectangle(
+                bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
+
+        for bc in range(boxCount):
+            boco_x1[bc] += trainSpeed * i
+            boco_x2[bc] += trainSpeed * i
+            box_cover[bc] = screen.create_rectangle(
+                boco_x1[bc], boco_y1[bc], boco_x2[bc], boco_y2[bc], fill="#362a42", outline='')
+
+        # Check if train is off the screen
+        if boxCount != 0:
+            # Last box of the train out of the screen, end but not immediately
+            if bo_x2[boxCount - 1] >= WIDTH + 50:
+                break
+        else:
+
+            # No boxes, only head, check only the head
+            if th2_x2 >= WIDTH + 50:
+                break
+
+        screen.update()
+        sleep(0.03)
+        screen.delete(smoke)
+        [screen.delete(wheels[w]) for w in range(wheelsCount)]
+        [screen.delete(train_head[t]) for t in range(len(train_head))]
+        [screen.delete(connector[b], boxes[b], box_cover[b]) for b in range(boxCount)]
+
+waitWithGraphics(2)
+lights[0] = create_circle(li_x[0], li_y[0], l_rad, screen, color="grey")
+lights[2] = create_circle(li_x[2], li_y[2], l_rad, screen, color="green")
+print("The animation has ended")
 
 # Kills current script even when being imported
 os.kill(os.getpid(), signal.SIGINT)
