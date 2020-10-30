@@ -390,8 +390,13 @@ screen.delete(smoke)
 ### TRAIN 2 ###
 
 # Animation only runs if enableSecondTrain is True
+# Code is basically the same except calculations are reversed
+
 if enableSecondTrain:
+
+    # Clears our arrays related to our train.
     clearArr(train, wheels, box_cover, boxes, connector, train_head)
+
     # Headbox
     th_x1, th_y1, th_x2, th_y2 = -2, HEIGHT - \
                                  280, -2 - headWidth, HEIGHT - 80
