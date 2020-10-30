@@ -301,9 +301,14 @@ endLoop = time.time() + 30
 # Set iterator
 i = 0
 while time.time() < endLoop:
+    # Iterate increment
     i += 1
+
+    # Animate the wheels
     for w in range(wheelsCount):
         wh_x[w] -= trainSpeed * i
+
+        # Wheel up and down effect
         if wh_y[w] >= th_y2:
             wh_y[w] -= wheel_bounce[w]
         else:
@@ -311,6 +316,8 @@ while time.time() < endLoop:
 
         wheels[w] = create_circle(
             wh_x[w], wh_y[w], wheelsRadius, screen, color=wheelColour)
+
+    # Individual pieces of the head animation
 
     th_x1 -= trainSpeed * i
     th_x2 -= trainSpeed * i
@@ -332,6 +339,7 @@ while time.time() < endLoop:
     train_head[3] = screen.create_rectangle(
         c_x1, c_y1, c_x2, c_y2, fill="black", outline="black")
 
+    # Smoke animation
     sm_radius = rd.randint(10, 30)
     sm_x -= trainSpeed * i
     sm_y -= trainSpeed * i
