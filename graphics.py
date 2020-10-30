@@ -337,8 +337,13 @@ while time.time() < endLoop:
     sm_y -= trainSpeed * i
     smoke = create_circle(sm_x, sm_y, sm_radius, screen,
                           color=rd.choice(sm_colors))
+
+    # If smoke is at the height of the train-box height
     if sm_y - sm_radius <= th2_y1 - 50:
+        # Return to back to chimney position
         sm_y = c_y1 - sm_radius
+
+    # Make the smoke blowing back effect is train head is off the screen.
     if th2_x2 <= 0 and boxCount != 0:
         sm_x += trainSpeed * 2 * i
         sm_y = th2_y1 - 30
@@ -346,18 +351,21 @@ while time.time() < endLoop:
             if bo_x2[boxCount - 1] >= 0:
                 sm_x = 0
 
+    # Animate every connector
     for c in range(connectorCount):
         con_x1[c] -= trainSpeed * i
         con_x2[c] -= trainSpeed * i
         connector[c] = screen.create_rectangle(
             con_x1[c], con_y1[c], con_x2[c], con_y2[c], fill="goldenrod4", width=4)
 
+    # Animate every box
     for b in range(boxCount):
         bo_x1[b] -= trainSpeed * i
         bo_x2[b] -= trainSpeed * i
         boxes[b] = screen.create_rectangle(
             bo_x1[b], bo_y1[b], bo_x2[b], bo_y2[b], fill=box_color[b], outline="")
 
+    # Animate every boxCover above each box
     for bc in range(boxCount):
         boco_x1[bc] -= trainSpeed * i
         boco_x2[bc] -= trainSpeed * i
