@@ -17,12 +17,12 @@ if not promptUserInp:
     boxCount = 13
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
-    trainSpeed = 1
+    trainSpeed = 0.2
     wheelColour = "chocolate2"
 
     # Enable trains coming from both directions.
     # NOTE: This will lag the animation like crazy
-    enableSecondTrain = False
+    enableSecondTrain = True
 else:
     boxCount = int(input("Amount of box after train head >> "))
     # Greater than or equal to 450
