@@ -37,7 +37,7 @@ def popupMsgBox():
         # Async background music only works with threading
         # Starting both threads concurrently
         if config.enableSecT:
-            messagebox.showwarning("Warning!", "You enabled second train, this is going to cause lag, please expect errors or bugs")
+            messagebox.showwarning("Warning!", "You enabled second train, this is going to cause lag, please expect errors or bugs.")
 
         graphicsThread.start()
         soundEffectThread.start()
