@@ -17,9 +17,9 @@ developmentMode = False
 if not promptUserInp:
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
     boxCount = 20
-    trainBoxWidth = 450  # Greater than or equal to 450
+    trainBoxWidth = 520  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
-    trainSpeed = 0.2
+    trainSpeed = 0.16
     wheelColour = "chocolate2"
 
     # Enable trains coming from both directions.

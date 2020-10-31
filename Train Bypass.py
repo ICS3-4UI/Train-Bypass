@@ -7,8 +7,8 @@ from winsound import *
 
 # Avoid errors if required pip modules isn't installed.
 try:
-    from pymsgbox import *
     import config
+    from pymsgbox import *
 except ModuleNotFoundError:
     print("Required modules not installed!")
     sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
@@ -36,6 +36,8 @@ def popupMsgBox():
 
         # Async background music only works with threading
         # Starting both threads concurrently
+        if config.enableSecT:
+            messagebox.showwarning("Warning!", "You enabled second train, this is going to cause lag, please expect errors or bugs")
 
         graphicsThread.start()
         soundEffectThread.start()
