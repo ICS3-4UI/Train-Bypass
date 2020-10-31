@@ -575,8 +575,7 @@ class Train:
                     if bo_x2[boxCount - 1] >= WIDTH + 50:
                         break
                 else:
-
-                    # No boxes, only head, check only the head
+                    # No boxes, only head, check only the head if it is off screen
                     if th2_x2 >= WIDTH + 50:
                         break
 
