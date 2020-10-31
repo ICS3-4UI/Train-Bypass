@@ -4,11 +4,11 @@ from time import sleep
 from tkinter import messagebox
 from tkinter import *
 from winsound import *
-import config
 
 # Avoid errors if required pip modules isn't installed.
 try:
     from pymsgbox import *
+    import config
 except ModuleNotFoundError:
     print("Required modules not installed!")
     sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
