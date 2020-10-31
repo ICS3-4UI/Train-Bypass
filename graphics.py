@@ -605,6 +605,5 @@ if __name__ == "__main__":
     else:
         tk = Tk()
         tk.withdraw()  # Display messagebox without a Tkinter window.
-        confirmation = messagebox.showerror("Empty",
-                                            "Nothing to see here.")
+        confirmation = messagebox.showerror("Empty", "Nothing to see here.")
         sys.exit("You are on the wrong script!")
