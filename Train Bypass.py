@@ -1,8 +1,10 @@
+from graphics import Train  # Pure graphics and animation script @ graphics.py in the same directory
 from threading import *
 from time import sleep
 from tkinter import messagebox
 from tkinter import *
 from winsound import *
+import config
 
 # Avoid errors if required pip modules isn't installed.
 try:
@@ -10,6 +12,17 @@ try:
 except ModuleNotFoundError:
     print("Required modules not installed!")
     sys.exit("Run (pip install -r requirements.txt) to resolve this issue")
+
+
+def soundEffect():
+    # Wait few seconds to match traffic light
+    # Start playing once light turn orange (Animation starts)
+    sleep(1.5)
+    PlaySound("assets/bgmusic.wav", SND_FILENAME)
+
+    # Play twice if user enables trains passing from both directions
+    if config.enableSecT:
+        PlaySound("assets/bgmusic.wav", SND_FILENAME)
 
 
 # Messagebox to make the user confirm they've turned on sound before animation plays
@@ -20,7 +33,10 @@ def popupMsgBox():
     soundConfirmation = confirm(text='Do you have your sound turned on?', title='Confirmation',
                                 buttons=["Yes, I have my sound turned on", "No, I don't want to turn on my sound"])
     if soundConfirmation == "Yes, I have my sound turned on":
-        # Start the animation by executing the required threads.
+
+        # Async background music only works with threading
+        # Starting both threads concurrently
+
         graphicsThread.start()
         soundEffectThread.start()
     else:
@@ -28,22 +44,15 @@ def popupMsgBox():
         sys.exit("This program requires sound.")
 
 
-def soundEffect():
-    # Wait 3 second to match traffic light
-    # Start playing once light turn orange (Animation starts)
-    sleep(1)
-    PlaySound("assets/bgmusic.wav", SND_FILENAME)
-    # sleep(1)
-    # PlaySound("assets/bgmusic.wav", SND_FILENAME)
-
-
 def graphics():
     # Tkinter animation is in another script, importing the module to use it.
-    import graphics  # Pure graphics and animation script @ graphics.py in the same directory
+    Train.animateTrain(None)
 
 
 # Initiate threads (Graphics and sound needs to be on independent threads)
 graphicsThread = Thread(target=graphics)
 soundEffectThread = Thread(target=soundEffect)
 
-Thread(target=popupMsgBox).start()
+# Thread(target=popupMsgBox).start()
+
+popupMsgBox()
