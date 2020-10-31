@@ -53,6 +53,4 @@ def graphics():
 graphicsThread = Thread(target=graphics)
 soundEffectThread = Thread(target=soundEffect)
 
-# Thread(target=popupMsgBox).start()
-
 popupMsgBox()
