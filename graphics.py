@@ -597,7 +597,7 @@ class Train:
         screen.mainloop()
 
 
-# Only let run the script directly if it is on development mode.
+# Only let run the script directly if it is in development mode (TRUE).
 if __name__ == "__main__":
     if developmentMode:
         Train().animateTrain()
