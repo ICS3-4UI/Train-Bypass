@@ -10,13 +10,13 @@ import config
 # Input variables by terminal or no?
 promptUserInp = False
 
-developmentMode = True
+developmentMode = False
 
 ### GLOBAL VARIABLES ###
 
 if not promptUserInp:
     # EDIT ME, ALL THE VARIABLES ARE DYNAMIC :)
-    boxCount = 5
+    boxCount = 20
     trainBoxWidth = 450  # Greater than or equal to 450
     con_len = 75  # Connector length (Dynamic)
     trainSpeed = 0.2
@@ -598,12 +598,13 @@ class Train:
         screen.mainloop()
 
 
-# Avoid running the script directly, the recommended way is to run on a separate script.
-if __name__ == "__main__" and not developmentMode:
-    tk = Tk()
-    tk.withdraw()  # Display messagebox without a Tkinter window.
-    confirmation = messagebox.showerror("Empty",
-                                        "Nothing to see here.")
-    sys.exit("You are on the wrong script!")
-else:
-    Train().animateTrain()
+# Only let run the script directly if it is on development mode.
+if __name__ == "__main__":
+    if developmentMode:
+        Train().animateTrain()
+    else:
+        tk = Tk()
+        tk.withdraw()  # Display messagebox without a Tkinter window.
+        confirmation = messagebox.showerror("Empty",
+                                            "Nothing to see here.")
+        sys.exit("You are on the wrong script!")
